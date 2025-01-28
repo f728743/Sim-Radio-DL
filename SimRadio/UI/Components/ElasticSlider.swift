@@ -46,6 +46,13 @@ struct ElasticSlider<LeadingContent: View, TrailingContent: View>: View {
 
 // MARK: private
 
+private struct SizePreferenceKey: PreferenceKey {
+    static let defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
+    }
+}
+
 private extension ElasticSlider {
     var isValueExtreme: Bool {
         value == range.lowerBound || value == range.upperBound
@@ -126,8 +133,8 @@ private extension ElasticSlider {
             .padding(.horizontal, isActive ? 0 : config.growth)
             .padding(.leading, config.maxStretch - leadingStretch)
             .padding(.trailing, config.maxStretch - trailingStretch)
-            .onPreferenceChange(SizePreferenceKey.self) { value in
-                viewSize = value
+            .onPreferenceChange(SizePreferenceKey.self) { [$viewSize] value in
+                $viewSize.wrappedValue = value
             }
             .highPriorityGesture(
                 DragGesture(minimumDistance: 0)

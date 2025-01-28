@@ -37,8 +37,8 @@ struct ExpandableNowPlaying: View {
                     stacked(progress: 1, withAnimation: true)
                 }
             }
-            .onPreferenceChange(NowPlayingExpandProgressPreferenceKey.self) { value in
-                expandProgress = value
+            .onPreferenceChange(NowPlayingExpandProgressPreferenceKey.self) { [$expandProgress] value in
+                $expandProgress.wrappedValue = value
             }
     }
 }

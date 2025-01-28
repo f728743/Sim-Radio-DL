@@ -7,29 +7,22 @@
 
 import SwiftUI
 
-struct SizePreferenceKey: PreferenceKey {
-    static let defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
-    }
-}
+struct SizeReader: ViewModifier {
+    @Binding var size: CGSize
 
-struct MeasureSizeModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .overlay {
-                GeometryReader { geometry in
-                    Color.clear
-                        .preference(key: SizePreferenceKey.self, value: geometry.size)
-                }
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
+            } action: { newVal in
+                size = newVal
             }
     }
 }
 
 extension View {
-    func measureSize(perform action: @escaping (CGSize) -> Void) -> some View {
-        modifier(MeasureSizeModifier())
-            .onPreferenceChange(SizePreferenceKey.self, perform: action)
+    func sizeReader(size: Binding<CGSize>) -> some View {
+        modifier(SizeReader(size: size))
     }
 }
 
@@ -39,7 +32,7 @@ private struct Measurements: View {
     @State private var size: CGSize = .zero
 
     var body: some View {
-        label.measureSize { size = $0 }
+        label.sizeReader(size: $size)
     }
 
     var label: some View {

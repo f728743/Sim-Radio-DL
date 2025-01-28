@@ -5,6 +5,7 @@
 //  Created by Alexey Vorobyov on 27.11.2024.
 //
 
+import AVFoundation
 import Foundation
 
 actor LibraryManagmentActor {
@@ -17,6 +18,7 @@ actor LibraryManagmentActor {
 
 @MainActor
 final class MediaLibrary: ObservableObject {
+    var player: AVPlayer?
     var loadManager: LibraryManagmentActor
     @Published var list: [MediaList] = []
 
@@ -31,10 +33,46 @@ final class MediaLibrary: ObservableObject {
         Task {
             do {
                 let series = try await loadManager.loadSimRadioSeries(url: url)
+                testBuildPlaylist(baseUrlStr: baseUrlStr, series: series)
                 list = [.init(from: series, baseUrl: baseUrlStr)]
             } catch {
                 print(error)
             }
+        }
+    }
+}
+
+private extension MediaLibrary {
+    func currentSecondOfDay() -> Double {
+        let now = Date()
+        let calendar = Calendar.current
+
+        let h = calendar.component(.hour, from: now)
+        let m = calendar.component(.minute, from: now)
+        let s = calendar.component(.second, from: now)
+        return Double(h * 60 * 60 + m * 60 + s)
+    }
+
+    func testBuildPlaylist(baseUrlStr: String, series: SimRadio.Series) {
+        guard
+            let baseUrl = URL(string: baseUrlStr),
+            let station = series.stations.first
+        else { return }
+
+        let nowSec = currentSecondOfDay()
+        do {
+            let playlist = try Playlist(
+                baseUrl: baseUrl,
+                commonFiles: series.common.fileGroups,
+                station: station
+            )
+
+            let playerItem = try playlist.getPlayerItem(for: Date().startOfDay, from: nowSec, minDuraton: 3 * 60)
+            let player = AVPlayer(playerItem: playerItem)
+            player.play()
+            self.player = player
+        } catch {
+            print(error)
         }
     }
 }

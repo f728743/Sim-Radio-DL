@@ -27,8 +27,8 @@ struct OverlaidRootView: View {
                 expanded: $expandedNowPlaying
             )
             .environmentObject(playerController)
-            .onPreferenceChange(NowPlayingExpandProgressPreferenceKey.self) { value in
-                nowPlayingExpandProgress = value
+            .onPreferenceChange(NowPlayingExpandProgressPreferenceKey.self) { [$nowPlayingExpandProgress] value in
+                $nowPlayingExpandProgress.wrappedValue = value
             }
         }
         .onAppear {

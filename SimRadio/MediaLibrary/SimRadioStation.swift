@@ -64,7 +64,7 @@ enum SimRadio {
     }
 
     struct Source: Codable {
-        let type: String
+        let type: SrcType
         let groupTag: String?
         let fileTag: String?
     }
@@ -79,7 +79,7 @@ enum SimRadio {
     }
 
     struct Conditon: Codable {
-        let type: String
+        let type: ConditionType
         let fragmentTag: String?
         let probability: Double?
         let from: String?
@@ -109,5 +109,19 @@ enum SimRadio {
     struct Playlist: Codable {
         let firstFragment: FragmentRef
         let fragments: [Fragment]
+    }
+
+    enum SrcType: String, Codable {
+        case group
+        case attach
+        case file
+    }
+
+    enum ConditionType: String, Codable {
+        case nextFragment
+        case random
+        case groupAnd
+        case groupOr
+        case timeInterval
     }
 }

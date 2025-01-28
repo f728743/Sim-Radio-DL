@@ -38,7 +38,7 @@ struct MarqueeText: View {
                 .padding(.trailing, config.rightFade)
                 .lineLimit(1)
                 .fixedSize()
-                .measureSize { textSize = $0 }
+                .sizeReader(size: $textSize)
                 .hidden()
         }
         .onAppear {

@@ -12,7 +12,6 @@ struct LibraryView: View {
                 .listRowInsets(.init(top: 0, leading: 23, bottom: 0, trailing: 22))
                 .listSectionSeparator(.hidden, edges: .top)
                 .listRowBackground(Color(.palette.appBackground(expandProgress: expandProgress)))
-
                 .onTapGesture {
                     router.navigateToDownloaded()
                 }
@@ -20,7 +19,6 @@ struct LibraryView: View {
                 .listRowInsets(.init(top: 25, leading: 20, bottom: 0, trailing: 20))
                 .listSectionSeparator(.hidden, edges: .bottom)
                 .listRowBackground(Color(.palette.appBackground(expandProgress: expandProgress)))
-
         }
         .background(Color(.palette.appBackground(expandProgress: expandProgress)))
         .listStyle(.plain)

@@ -30,8 +30,8 @@ struct CustomTabView<Content: View>: View {
                 localSelection: selection
             )
         }
-        .onPreferenceChange(TabBarItemsPreferenceKey.self) { value in
-            tabs = value
+        .onPreferenceChange(TabBarItemsPreferenceKey.self) { [$tabs] value in
+            $tabs.wrappedValue = value
         }
     }
 }
